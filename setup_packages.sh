@@ -1,15 +1,25 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
+infobox() {
+    dialog --infobox "$1" 4 50
+}
+
+infobox "Ensuring git is installed..."
 sudo pacman -S --noconfirm --needed git
 
+infobox "Downloading dotfiles repo..."
 if [ ! -d "$HOME/code/000-dotfiles" ]; then
     mkdir -p "$HOME/code"
     git clone "https://github.com/lfkeitel/dotfiles" "$HOME/code/000-dotfiles"
 fi
 
 cd "$HOME/code/000-dotfiles"
+
+infobox "Installing PowerShell..."
 ./install-powershell.sh
 
+infobox "Setting up Pacman..."
 TERM=xterm ./install.ps1 pacman
 sudo pacman -S --needed - < "$DIR/pkglist.txt"
 
@@ -38,7 +48,25 @@ dialog --title "Are you Lee?" \
     --yesno "Are you Lee and want to install more customized configs?" 7 60
 
 response=$?
+
+infobox "Installing configs..."
 case $response in
     0) TERM=xterm ./install.ps1;;
     1) install_common_configs;;
+esac
+
+infobox "Enabling system services..."
+sudo systemctl enable NetworkManager.service
+sudo systemctl enable lightdm.service
+sudo systemctl enable haveged.service
+sudo systemctl enable org.cups.cupsd.service
+
+dialog --title "Restart PC" \
+    --backtitle "Restart PC" \
+    --defaultno \
+    --yesno "To ensure everything is setup and running, it's recommended to reboot your machine.\n\nWould you like to reboot now?" 10 60
+
+response=$?
+case $response in
+    0) sudo systemctl reboot;;
 esac
