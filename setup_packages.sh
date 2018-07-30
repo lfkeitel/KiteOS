@@ -5,9 +5,6 @@ infobox() {
     dialog --infobox "$1" 4 50
 }
 
-infobox "Ensuring git is installed..."
-sudo pacman -S --noconfirm --needed git
-
 infobox "Downloading dotfiles repo..."
 if [ ! -d "$HOME/code/000-dotfiles" ]; then
     mkdir -p "$HOME/code"
@@ -24,9 +21,12 @@ infobox "Installing PowerShell..."
 infobox "Setting up Pacman..."
 TERM=xterm ./install.ps1 pacman
 
-# TODO: Prompt is user wants packages from my repo
+# TODO: Prompt if user wants packages from my repo
 echo "In the following shell, please trust my key ultimately (press Enter)"
-sudo /bin/bash -c "pacman-keys --recv-keys E638625F && pacman-keys --edit lee@keitel.xyz"
+read -k 1
+sudo /bin/bash -c "pacman-key --recv-keys E638625F && pacman-key --edit lee@keitel.xyz"
+
+sudo pacman -Sy # Download repo databases
 sudo pacman -S --noconfirm --needed - < "$DIR/pkglist.txt"
 
 install_common_configs() {
