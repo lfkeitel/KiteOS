@@ -15,10 +15,11 @@ these scripts take over starting at the section titled "Installation".
 2. Partition your disks using fstab
 3. Mount your partitions using `/mnt` as the root
 4. Install git `pacman -S git`
-5. Clone the bootstrap files `git clone https://github.com/lfkeitel/KiteOS` /KiteOS
+5. Clone the bootstrap files `git clone https://github.com/lfkeitel/KiteOS /KiteOS`
 6. Run the bootstrap script `/KiteOS/bootstrap.sh`
 7. Reboot and login as you your new user
-8. Run the second setup script `/KiteOS/setup_packages.sh`. DO NOT run as root, it will prompt for a sudo password.
+8. Run the second setup script `/KiteOS/setup_packages.sh`. DO NOT run as root,
+it will prompt for a sudo password when needed.
 9. Reboot
 
 ## Assumptions
@@ -38,7 +39,7 @@ These scripts assume the system will be:
 
 ## Is KiteOS a distribution?
 
-No. It's a setup of scripts to automate the setup of a new Arch install.
+No. It's a set of scripts to automate the setup of a new Arch install.
 
 ## Is this compatible with other distributions?
 
