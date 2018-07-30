@@ -15,12 +15,16 @@ get_input() {
 }
 
 get_secret() {
-    dialog --no-cancel --passwordbox "$1" 10 60 3>&1 1>&2 2>&3 3>&1
+    dialog --no-cancel --insecure --passwordbox "$1" 10 60 3>&1 1>&2 2>&3 3>&1
 }
 
 infobox() {
     dialog --infobox "$1" 4 50
 }
+
+[ ! -d /mnt/bin ] && pacstrap /mnt base base-devel networkmanager
+[ ! -f /mnt/etc/fstab ] && genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt
 
 # Setup main user
 name=$(get_input "Username:")
