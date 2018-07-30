@@ -16,12 +16,18 @@ fi
 
 cd "$HOME/code/000-dotfiles"
 
+gpg --recv-keys 465022E743D71E39 # Jonni Westphalen - aurman
+
 infobox "Installing PowerShell..."
 ./install-powershell.sh
 
 infobox "Setting up Pacman..."
 TERM=xterm ./install.ps1 pacman
-sudo pacman -S --needed - < "$DIR/pkglist.txt"
+
+# TODO: Prompt is user wants packages from my repo
+echo "In the following shell, please trust my key ultimately (press Enter)"
+sudo /bin/bash -c "pacman-keys --recv-keys E638625F && pacman-keys --edit lee@keitel.xyz"
+sudo pacman -S --noconfirm --needed - < "$DIR/pkglist.txt"
 
 install_common_configs() {
     TERM=xterm

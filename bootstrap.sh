@@ -93,11 +93,20 @@ partuuid="$(echo "${available_disks[$choice]}" | sed -n 's/.*PARTUUID=\"\([^\"]*
 infobox "Setting up UEFI boot entry..."
 bootctl install
 
+dialog --title "Are you using Intel?" \
+    --backtitle "Are you using Intel?" \
+    --yesno "Are you using an Intel CPU and not using a VM?" 7 60
+
+response=$?
+ucode_line=''
+case $response in
+    0) ucode_line=$'initrd /intel-ucode.img\n' && pacman -S --noconfirm --needed intel-ucode;;
+esac
+
 cat >/boot/loader/entries/arch.conf <<EOF
 title KiteOS
 linux /vmlinuz-linux
-initrd /intel-ucode.img
-initrd /initramfs-linux.img
+${ucode_line}initrd /initramfs-linux.img
 options root=PARTUUID=$partuuid rw
 EOF
 
@@ -106,7 +115,6 @@ echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
 infobox "Enabling Network Manager..."
 systemctl enable NetworkManager
-systemctl start NetworkManager
 
 infobox "Disabling PC speaker..."
 rmmod pcspkr
