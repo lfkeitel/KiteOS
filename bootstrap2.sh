@@ -99,6 +99,13 @@ ${ucode_line}initrd /initramfs-linux.img
 options root=PARTUUID=$partuuid rw
 EOF
 
+cat >/boot/loader/entries/arch-zen.conf <<EOF
+title KiteOS Zen
+linux /vmlinuz-linux-zen
+${ucode_line}initrd /initramfs-linux-zen.img
+options root=PARTUUID=$partuuid rw
+EOF
+
 
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 

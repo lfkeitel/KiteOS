@@ -9,17 +9,14 @@ infobox "Downloading dotfiles repo..."
 if [ ! -d "$HOME/code/000-dotfiles" ]; then
     mkdir -p "$HOME/code"
     git clone "https://github.com/lfkeitel/dotfiles" "$HOME/code/000-dotfiles"
+    cd "$HOME/code/000-dotfiles"
+else
+    cd "$HOME/code/000-dotfiles"
+    git pull
 fi
 
-cd "$HOME/code/000-dotfiles"
-
-gpg --recv-keys 465022E743D71E39 # Jonni Westphalen - aurman
-
-infobox "Installing PowerShell..."
-./install-powershell.sh
-
 infobox "Setting up Pacman..."
-TERM=xterm ./install.ps1 pacman
+./install.py pacman
 
 # TODO: Prompt if user wants packages from my repo
 echo "In the following shell, please trust my key ultimately (press Enter)"
@@ -30,12 +27,12 @@ sudo pacman -Sy # Download repo databases
 sudo pacman -S --noconfirm --needed - < "$DIR/pkglist.txt"
 
 install_common_configs() {
-    TERM=xterm
-    ./install.ps1 zsh
-    ./install.ps1 configs
-    ./install.ps1 fonts
-    ./install.ps1 vscode
-    ./install.ps1 vim
+    ./install.py zsh
+    ./install.py fish
+    ./install.py configs
+    ./install.py fonts
+    ./install.py vscode
+    ./install.py vim
 
     dialog --title "Install GPG Agent" \
         --backtitle "Install GPG Agent" \
@@ -44,7 +41,7 @@ install_common_configs() {
 
     response=$?
     case $response in
-        0) ./install.ps1 gpg -NoKey;;
+        0) ./install.py gpg -NoKey;;
     esac
 }
 
@@ -57,7 +54,7 @@ response=$?
 
 infobox "Installing configs..."
 case $response in
-    0) TERM=xterm ./install.ps1;;
+    0) ./install.py;;
     1) install_common_configs;;
 esac
 
